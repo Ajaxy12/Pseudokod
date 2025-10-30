@@ -408,6 +408,185 @@ Shows: "Your branch is ahead/behind 'origin/main' by X commits"
 
 ---
 
+## 🚩 Git Flags Quick Reference
+
+### Most Common Git Flags
+
+#### `-m` (Message)
+**What it does:** Adds a commit message/comment  
+**Use with:** `git commit`  
+**Example:**
+```bash
+git commit -m "Your commit message here"
+```
+**Why:** Every commit needs a message to describe what changed
+
+---
+
+#### `-u` (Upstream)
+**What it does:** Sets up tracking between local and remote branch  
+**Use with:** `git push`  
+**Example:**
+```bash
+git push -u origin main
+```
+**Why:** Only needed first time - after that you can use `git push` alone
+
+---
+
+#### `-f` (Force)
+**What it does:** Force push - overwrites remote history  
+**Use with:** `git push`  
+**Example:**
+```bash
+git push -f origin main
+```
+**Warning:** ⚠️ Permanently deletes remote history! Use carefully.
+
+---
+
+#### `--no-rebase`
+**What it does:** Pulls changes without rebasing  
+**Use with:** `git pull`  
+**Example:**
+```bash
+git pull origin main --no-rebase
+```
+**Why:** Creates merge commit instead of rebasing history
+
+---
+
+#### `-A` (All)
+**What it does:** Adds all changes including deletions  
+**Use with:** `git add`  
+**Example:**
+```bash
+git add -A
+```
+**Why:** Includes file deletions, not just new/modified files
+
+---
+
+#### `-r` (Remote)
+**What it does:** Shows remote branches  
+**Use with:** `git branch`  
+**Example:**
+```bash
+git branch -r
+```
+**Why:** Lists all branches on remote repository
+
+---
+
+#### `-v` (Verbose)
+**What it does:** Shows detailed information  
+**Use with:** `git remote`  
+**Example:**
+```bash
+git remote -v
+```
+**Why:** Shows both fetch and push URLs
+
+---
+
+#### `--oneline`
+**What it does:** Shows compact one-line commit history  
+**Use with:** `git log`  
+**Example:**
+```bash
+git log --oneline
+```
+**Why:** Easier to read - one commit per line
+
+---
+
+#### `--allow-unrelated-histories`
+**What it does:** Allows merging unrelated Git histories  
+**Use with:** `git pull`  
+**Example:**
+```bash
+git pull origin main --allow-unrelated-histories
+```
+**Why:** Needed when merging repositories with different histories
+
+---
+
+#### `-D` (Force Delete)
+**What it does:** Force deletes a branch  
+**Use with:** `git branch`  
+**Example:**
+```bash
+git branch -D branch-name
+```
+**Warning:** ⚠️ Permanently deletes branch even if it has unmerged changes
+
+---
+
+#### `-m` (Rename/Move)
+**What it does:** Renames or moves files/branches  
+**Use with:** `git branch` or `git mv`  
+**Example:**
+```bash
+git branch -m old-name new-name
+git mv old-file.js new-file.js
+```
+**Why:** Renames branches or moves/renames files in Git
+
+---
+
+#### `--orphan`
+**What it does:** Creates branch with no history  
+**Use with:** `git checkout`  
+**Example:**
+```bash
+git checkout --orphan new-branch
+```
+**Why:** Starts fresh branch without commit history
+
+---
+
+#### `--soft`
+**What it does:** Undoes commit but keeps changes staged  
+**Use with:** `git reset`  
+**Example:**
+```bash
+git reset --soft HEAD~1
+```
+**Why:** Undo commit but keep your changes ready to commit again
+
+---
+
+#### `--hard`
+**What it does:** Undoes commit and discards all changes  
+**Use with:** `git reset`  
+**Example:**
+```bash
+git reset --hard HEAD~1
+```
+**Warning:** ⚠️ Permanently deletes changes! Use carefully.
+
+---
+
+### Quick Flag Cheat Sheet
+
+| Flag | Command | Purpose |
+|------|---------|---------|
+| `-m` | `git commit` | Add commit message |
+| `-u` | `git push` | Set upstream tracking (first time only) |
+| `-f` | `git push` | Force push (overwrites remote) |
+| `-A` | `git add` | Add all changes including deletions |
+| `-r` | `git branch` | Show remote branches |
+| `-v` | `git remote` | Show verbose remote info |
+| `--oneline` | `git log` | Compact commit history |
+| `-D` | `git branch` | Force delete branch |
+| `--soft` | `git reset` | Undo commit, keep changes |
+| `--hard` | `git reset` | Undo commit, discard changes |
+| `--orphan` | `git checkout` | Create branch without history |
+| `--no-rebase` | `git pull` | Pull without rebasing |
+| `--allow-unrelated-histories` | `git pull` | Merge unrelated histories |
+
+---
+
 ## 📝 Quick Reference
 
 ### Most Common Commands
