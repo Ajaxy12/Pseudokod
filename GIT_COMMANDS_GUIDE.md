@@ -446,13 +446,44 @@ git push -f origin main
 ---
 
 #### `--no-rebase`
-**What it does:** Pulls changes without rebasing  
+**What it does:** Pulls changes from GitHub without "replaying" your local commits on top of the new changes.  
+**In plain language:** This means that when you use `git pull` with `--no-rebase`, Git will keep your commit history as it is and make one new commit that combines your changes with the changes from GitHub. It does NOT try to re-apply each of your commits one-by-one like a rebase would.
 **Use with:** `git pull`  
 **Example:**
 ```bash
 git pull origin main --no-rebase
 ```
-**Why:** Creates merge commit instead of rebasing history
+**Why:** It creates a merge commit so you can see a clear point where changes from different places came together, instead of re-writing your commit history.
+
+**User-Friendly vs Industry Standard:**
+- ✅ **User-Friendly:** Uses `--no-rebase` explicitly - makes it clear what's happening, easier to understand for beginners
+- 📊 **Industry Standard:** Default `git pull` behavior (without any flag) actually does merge by default, so `--no-rebase` is redundant but explicit
+- 💡 **Best Practice:** Use `git pull --no-rebase` when learning to understand what's happening, or just `git pull` (which does merge by default)
+
+**Note:** Many professional teams use `--rebase` for cleaner history, but `--no-rebase` (or default merge) is safer and easier for beginners.
+
+---
+
+#### `--rebase` (Advanced)
+**What it does:** Pulls changes and replays your local commits on top of the remote changes  
+**Use with:** `git pull`  
+**Example:**
+```bash
+git pull origin main --rebase
+```
+**Why:** Creates a linear commit history without merge commits - looks cleaner
+
+**User-Friendly vs Industry Standard:**
+- ⚠️ **Advanced/Beginner Caution:** `--rebase` rewrites commit history - can be confusing if conflicts occur
+- 📊 **Industry Standard:** Used by many professional teams for cleaner, linear history
+- 💡 **Best Practice:** Use `--rebase` only if you understand Git well and your team prefers it. For beginners, stick with `--no-rebase` or default merge.
+
+**When to use:**
+- ✅ You want clean, linear history
+- ✅ Your team prefers rebase workflow
+- ✅ You're comfortable resolving conflicts
+- ❌ Avoid if you're learning Git
+- ❌ Avoid if you've already pushed commits (unless you know what you're doing)
 
 ---
 
@@ -569,21 +600,27 @@ git reset --hard HEAD~1
 
 ### Quick Flag Cheat Sheet
 
-| Flag | Command | Purpose |
-|------|---------|---------|
-| `-m` | `git commit` | Add commit message |
-| `-u` | `git push` | Set upstream tracking (first time only) |
-| `-f` | `git push` | Force push (overwrites remote) |
-| `-A` | `git add` | Add all changes including deletions |
-| `-r` | `git branch` | Show remote branches |
-| `-v` | `git remote` | Show verbose remote info |
-| `--oneline` | `git log` | Compact commit history |
-| `-D` | `git branch` | Force delete branch |
-| `--soft` | `git reset` | Undo commit, keep changes |
-| `--hard` | `git reset` | Undo commit, discard changes |
-| `--orphan` | `git checkout` | Create branch without history |
-| `--no-rebase` | `git pull` | Pull without rebasing |
-| `--allow-unrelated-histories` | `git pull` | Merge unrelated histories |
+| Flag | Command | Purpose | User-Friendly | Industry Standard |
+|------|---------|---------|---------------|-------------------|
+| `-m` | `git commit` | Add commit message | ✅ Yes | ✅ Yes |
+| `-u` | `git push` | Set upstream tracking (first time only) | ✅ Yes | ✅ Yes |
+| `-f` | `git push` | Force push (overwrites remote) | ⚠️ Dangerous | ⚠️ Use carefully |
+| `-A` | `git add` | Add all changes including deletions | ✅ Yes | ✅ Yes |
+| `-r` | `git branch` | Show remote branches | ✅ Yes | ✅ Yes |
+| `-v` | `git remote` | Show verbose remote info | ✅ Yes | ✅ Yes |
+| `--oneline` | `git log` | Compact commit history | ✅ Yes | ✅ Yes |
+| `-D` | `git branch` | Force delete branch | ⚠️ Dangerous | ⚠️ Use carefully |
+| `--soft` | `git reset` | Undo commit, keep changes | ✅ Yes | ✅ Yes |
+| `--hard` | `git reset` | Undo commit, discard changes | ⚠️ Dangerous | ⚠️ Use carefully |
+| `--orphan` | `git checkout` | Create branch without history | ⚠️ Advanced | ✅ Yes |
+| `--no-rebase` | `git pull` | Pull without rebasing (explicit merge) | ✅ Yes (Beginner-friendly) | ✅ Yes (Default behavior) |
+| `--rebase` | `git pull` | Pull with rebase (linear history) | ⚠️ Advanced | ✅ Yes (Many teams prefer) |
+| `--allow-unrelated-histories` | `git pull` | Merge unrelated histories | ✅ Yes | ✅ Yes |
+
+**Legend:**
+- ✅ **User-Friendly:** Safe and easy to use, especially for beginners
+- 📊 **Industry Standard:** Commonly used in professional development
+- ⚠️ **Dangerous/Advanced:** Can cause data loss or requires advanced knowledge
 
 ---
 
