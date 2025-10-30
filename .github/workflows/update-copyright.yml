@@ -1,0 +1,38 @@
+name: Update Copyright Year
+
+on:
+  schedule:
+    # Kör varje år den 1 januari kl 00:00 UTC
+    - cron: '0 0 1 1 *'
+  workflow_dispatch: # Manuell körning möjlig
+
+jobs:
+  update-copyright:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Get current year
+        id: year
+        run: echo "year=$(date +'%Y')" >> $GITHUB_OUTPUT
+        
+      - name: Update LICENSE file
+        run: |
+          sed -i "s/Copyright (c) [0-9]*/Copyright (c) ${{ steps.year.outputs.year }}/" LICENSE
+          
+      - name: Update README.md file
+        run: |
+          sed -i "s/Copyright (c) [0-9]*/Copyright (c) ${{ steps.year.outputs.year }}/" README.md
+          
+      - name: Commit changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add LICENSE README.md
+          git diff --staged --quiet || git commit -m "Update copyright year to ${{ steps.year.outputs.year }}"
+          git push
+

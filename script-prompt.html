@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Split the Nota - Restaurant Bill Splitter</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #66e8ea 0%, #a2a04b 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            max-width: 500px;
+            width: 100%;
+            min-height: 700px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        p {
+            color: #666;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        button {
+            background: linear-gradient(135deg, #009688 0%, #3F51B5 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            transition: transform 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            display: block;
+        }
+
+        #resultOnPageContent:empty::after {
+            content: "Inga resultat att visa";
+            display: block;
+            color: #999;
+            font-style: italic;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .result h2 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+
+        .result-item {
+            padding: 10px;
+            margin: 5px 0;
+            background: white;
+            border-left: 4px solid #667eea;
+            border-radius: 4px;
+        }
+
+        .result-item strong {
+            color: #667eea;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+
+        .modal-content h2 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .modal-content p {
+            color: #666;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .close-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        #resultInModal {
+            min-height: 150px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🍽️ Split the Nota</h1>
+        <p>Dela upp restaurangnotan med dina vänner!</p>
+        
+        <button onclick="startSplitBill()">Starta Beräkning</button>
+        <button onclick="startWithDefaults()">Använd Standardvärden</button>
+        <button id="clearResultsBtn" onclick="clearResults()" style="background: #6c757d; display: none;">Rensa Resultat</button>
+        
+        <!-- Resultat-div som visas på sidan (inte i modal) -->
+        <div id="resultOnPage" class="result">
+            <h2>💰 Resultat</h2>
+            <div id="resultOnPageContent"></div>
+        </div>
+    </div>
+
+    <!-- Modal för resultat -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <h2>💰 Beräkning Klar!</h2>
+            <!-- Resultat-div som visas i modal -->
+            <div id="resultInModal"></div>
+            <button class="close-btn" onclick="closeModal()">Stäng</button>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // LOGGING KONFIGURATION
+        // ============================================
+        // Sätt till true för att visa loggar i DevTools (development mode)
+        // Sätt till false för att dölja loggar (production mode)
+        const DEBUG_LOGS_ENABLED = true; // Ändra till false för production
+        
+        // Wrapper-funktion för console.log som bara loggar om DEBUG_LOGS_ENABLED är true
+        function debugLog(...args) {
+            if (DEBUG_LOGS_ENABLED) {
+                console.log(...args);
+            }
+        }
+        
+        // Wrapper för console.error (för felmeddelanden)
+        function debugError(...args) {
+            if (DEBUG_LOGS_ENABLED) {
+                console.error(...args);
+            }
+        }
+        
+        // Visa status när sidan laddas
+        debugLog("🍽️ Split the Nota - Sidan laddad!");
+        debugLog("📊 Debug-loggning:", DEBUG_LOGS_ENABLED ? "AKTIVERAD (Development)" : "INAKTIVERAD (Production)");
+        debugLog("💡 Ändra DEBUG_LOGS_ENABLED för att växla mellan development och production");
+        
+        // Standardvärden
+        // OBS: Dessa är const defaults som inte återtilldelas.
+        // Användarens inmatning "överskrider" dem vid körning via NYA variabler,
+        // vi ersätter alltså inte själva default-konstanterna.
+        const DEFAULT_TOTAL_SUMMA = 500;
+        const DEFAULT_ANTAL_VANNER = 4;
+        const DEFAULT_DRICKS_PROCENT = 0.15; // 15%
+
+        debugLog("📋 Standardvärden:", {
+            totalSumma: DEFAULT_TOTAL_SUMMA,
+            antalVanner: DEFAULT_ANTAL_VANNER,
+            dricksProcent: DEFAULT_DRICKS_PROCENT * 100 + "%"
+        });
+
+        // Huvudfunktion för att dela upp notan
+        function splitBill(totalSumma, antalVanner, dricksProcent) {
+            debugLog("🔢 splitBill() anropad med:", {
+                totalSumma: totalSumma,
+                antalVanner: antalVanner,
+                dricksProcent: dricksProcent * 100 + "%"
+            });
+            
+            // Beräkningar
+            const dricksBelopp = totalSumma * dricksProcent;
+            const summaMedDricks = totalSumma + dricksBelopp;
+            const attBetalaPerPerson = summaMedDricks / antalVanner;
+
+            debugLog("➗ Beräkningar:");
+            debugLog("  - Dricksbelopp:", dricksBelopp.toFixed(2), "kr");
+            debugLog("  - Summa med dricks:", summaMedDricks.toFixed(2), "kr");
+            debugLog("  - Per person:", attBetalaPerPerson.toFixed(2), "kr");
+
+            // Returnera resultat som objekt
+            return {
+                totalSumma: totalSumma,
+                dricksProcent: dricksProcent * 100,
+                dricksBelopp: dricksBelopp,
+                summaMedDricks: summaMedDricks,
+                antalVanner: antalVanner,
+                attBetalaPerPerson: attBetalaPerPerson
+            };
+        }
+
+        // Funktion för att visa resultat i modal
+        function showResult(result) {
+            debugLog("🎯 showResult() - Visar resultat i modal");
+            debugLog("📊 Resultatobjekt:", result);
+            
+            const modal = document.getElementById('modal');
+            const resultInModal = document.getElementById('resultInModal');
+            
+            // Formatera resultatet
+            const html = `
+                <p><strong>Total summa:</strong> ${result.totalSumma.toFixed(2)} kr</p>
+                <p><strong>Dricks (${result.dricksProcent}%):</strong> ${result.dricksBelopp.toFixed(2)} kr</p>
+                <p><strong>Summa med dricks:</strong> ${result.summaMedDricks.toFixed(2)} kr</p>
+                <p><strong>Antal vänner:</strong> ${result.antalVanner}</p>
+                <p><strong style="color: #667eea; font-size: 18px;">Varje vän ska betala: ${result.attBetalaPerPerson.toFixed(2)} kr</strong></p>
+            `;
+            
+            resultInModal.innerHTML = html;
+            modal.classList.add('show');
+            debugLog("✅ Modal visas nu");
+        }
+
+        // Funktion för att visa resultat i result-div på sidan
+        function showResultInDiv(result) {
+            debugLog("📄 showResultInDiv() - Visar resultat i div");
+            const resultOnPage = document.getElementById('resultOnPage');
+            const resultOnPageContent = document.getElementById('resultOnPageContent');
+            
+            const html = `
+                <div class="result-item">
+                    <strong>Total summa:</strong> ${result.totalSumma.toFixed(2)} kr
+                </div>
+                <div class="result-item">
+                    <strong>Dricks (${result.dricksProcent}%):</strong> ${result.dricksBelopp.toFixed(2)} kr
+                </div>
+                <div class="result-item">
+                    <strong>Summa med dricks:</strong> ${result.summaMedDricks.toFixed(2)} kr
+                </div>
+                <div class="result-item">
+                    <strong>Antal vänner:</strong> ${result.antalVanner}
+                </div>
+                <div class="result-item" style="background: #e8f0ff; border-left-color: #667eea;">
+                    <strong style="font-size: 18px;">Varje vän ska betala: ${result.attBetalaPerPerson.toFixed(2)} kr</strong>
+                </div>
+            `;
+            
+            resultOnPageContent.innerHTML = html;
+            
+            // Visa "Rensa Resultat"-knappen när resultat visas
+            document.getElementById('clearResultsBtn').style.display = 'block';
+            
+            debugLog("✅ Resultat-div på sidan visas nu");
+        }
+
+        // Funktion för att stänga modal
+        function closeModal() {
+            debugLog("❌ closeModal() - Stänger modal");
+            document.getElementById('modal').classList.remove('show');
+        }
+
+        // Funktion för att rensa alla resultat
+        function clearResults() {
+            debugLog("🧹 clearResults() - Rensar alla resultat");
+            
+            // Rensa innehållet på sidan
+            const resultOnPage = document.getElementById('resultOnPage');
+            const resultOnPageContent = document.getElementById('resultOnPageContent');
+            resultOnPageContent.innerHTML = '';
+            
+            // Rensa innehållet i modal
+            const resultInModal = document.getElementById('resultInModal');
+            resultInModal.innerHTML = '';
+            
+            // Stäng modal om den är öppen
+            const modal = document.getElementById('modal');
+            modal.classList.remove('show');
+            
+            // Göm "Rensa Resultat"-knappen när resultaten är rensade
+            document.getElementById('clearResultsBtn').style.display = 'none';
+            
+            debugLog("✅ Alla resultat rensade");
+        }
+
+        // Funktion för att starta med prompt
+        function startSplitBill() {
+            debugLog("🚀 startSplitBill() - Funktion startad");
+            // Rensa tidigare resultat innan ny beräkning
+            clearResults();
+            
+            // Hämta input från användaren med prompt()
+            const totalSummaInput = prompt(
+                `Ange total summa på notan (kr):`,
+                DEFAULT_TOTAL_SUMMA
+            );
+            
+            // Avbryt om användaren trycker Cancel
+            if (totalSummaInput === null) {
+                debugLog("⚠️ Användaren avbröt - Total summa");
+                return;
+            }
+            
+            const antalVannerInput = prompt(
+                `Ange antal vänner som delar notan:`,
+                DEFAULT_ANTAL_VANNER
+            );
+            
+            if (antalVannerInput === null) {
+                debugLog("⚠️ Användaren avbröt - Antal vänner");
+                return;
+            }
+            
+            const dricksInput = prompt(
+                `Ange dricks i procent (t.ex. 15 för 15%):`,
+                DEFAULT_DRICKS_PROCENT * 100
+            );
+            
+            if (dricksInput === null) {
+                debugLog("⚠️ Användaren avbröt - Dricks");
+                return;
+            }
+            
+            debugLog("📥 Input från användaren:", {
+                totalSummaInput: totalSummaInput,
+                antalVannerInput: antalVannerInput,
+                dricksInput: dricksInput
+            });
+            
+            // Konvertera till nummer
+            const totalSumma = parseFloat(totalSummaInput) || DEFAULT_TOTAL_SUMMA;
+            const antalVanner = parseInt(antalVannerInput) || DEFAULT_ANTAL_VANNER;
+            const dricksProcent = (parseFloat(dricksInput) || 15) / 100;
+            
+            debugLog("🔧 Konverterade värden:", {
+                totalSumma: totalSumma,
+                antalVanner: antalVanner,
+                dricksProcent: dricksProcent * 100 + "%"
+            });
+            
+            // Kontrollera att värdena är giltiga
+            if (totalSumma <= 0 || antalVanner <= 0 || dricksProcent < 0) {
+                debugError("❌ Felaktiga värden validerade:", {
+                    totalSumma: totalSumma,
+                    antalVanner: antalVanner,
+                    dricksProcent: dricksProcent
+                });
+                alert("❌ Felaktiga värden! Ange positiva tal.");
+                return;
+            }
+            
+            // Beräkna resultat
+            const result = splitBill(totalSumma, antalVanner, dricksProcent);
+            
+            // Visa resultat både i modal och div
+            showResult(result);
+            showResultInDiv(result);
+            
+            debugLog("✨ Beräkning klar!");
+        }
+
+        // Funktion för att använda standardvärden direkt
+        function startWithDefaults() {
+            debugLog("🚀 startWithDefaults() - Använder standardvärden");
+            // Rensa tidigare resultat innan ny beräkning
+            clearResults();
+            
+            const result = splitBill(DEFAULT_TOTAL_SUMMA, DEFAULT_ANTAL_VANNER, DEFAULT_DRICKS_PROCENT);
+            
+            showResult(result);
+            showResultInDiv(result);
+            
+            debugLog("✨ Beräkning med standardvärden klar!");
+        }
+
+        // Stäng modal när man klickar utanför
+        window.onclick = function(event) {
+            const modal = document.getElementById('modal');
+            if (event.target === modal) {
+                debugLog("🖱️ Klick utanför modal - stänger");
+                closeModal();
+            }
+        }
+        
+        debugLog("✅ Alla funktioner laddade och redo!");
+    </script>
+</body>
+</html>
