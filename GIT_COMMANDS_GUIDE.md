@@ -47,6 +47,29 @@ git add .github/
 git commit -m "Initial commit: Your project description"
 ```
 
+**What does `-m` mean?**
+- `-m` stands for **"message"** - it allows you to add a comment/description to your commit
+- The text inside quotes is your commit message that describes what changes you made
+- **Every commit should have a message** - it helps you remember what you changed and why
+
+**Examples of commit messages:**
+```bash
+git commit -m "Initial commit: Complete study guide with JavaScript examples"
+git commit -m "Add new JavaScript functions"
+git commit -m "Fix bug in calculation"
+git commit -m "Update README with installation instructions"
+git commit -m "Add Git commands guide"
+git commit -m "Remove unused files"
+```
+
+**Why commit messages are important:**
+- They help you understand what was changed in each commit
+- They make it easier to track your project history
+- Other collaborators can understand your changes
+- You can search through commit history by message
+
+**Tip:** Write clear, descriptive commit messages that explain WHAT you changed and WHY (if needed).
+
 #### Step 4: Create repository on GitHub
 - Go to GitHub.com and create a new repository
 - Copy the repository URL (e.g., `https://github.com/username/repo-name.git`)
@@ -61,6 +84,35 @@ git remote add origin https://github.com/username/repo-name.git
 git push -u origin main
 ```
 (Use `master` instead of `main` if that's your default branch name)
+
+**What does `-u` mean?**
+- `-u` stands for **"upstream"** - it sets up tracking between your local branch and the remote branch
+- After using `-u` once, Git remembers the connection, so you can just use `git push` in the future
+- **Only needed the first time** you push a new branch to GitHub
+- After that, you can simply use `git push` without `-u`
+
+**How it works:**
+```bash
+# First time pushing a branch (use -u)
+git push -u origin main
+
+# After that, you can just use:
+git push              # Git remembers origin/main automatically
+```
+
+**Without `-u`:**
+```bash
+git push origin main     # Works, but doesn't set up tracking
+git push                 # Won't work - Git doesn't know where to push
+```
+
+**With `-u`:**
+```bash
+git push -u origin main  # Sets up tracking
+git push                 # Now works! Git knows to push to origin/main
+```
+
+**Important:** Use `-u` only the first time you push a branch. After that, use `git push` for simplicity.
 
 ---
 
@@ -164,8 +216,45 @@ git add images/           # Images folder
 git commit -m "Description of what you changed"
 ```
 
+**What does `-m` mean?**
+- `-m` stands for **"message"** - it allows you to add a comment/description to your commit
+- The text inside quotes is your commit message that describes what changes you made
+- **Every commit should have a message** - it helps you remember what you changed and why
+
+**Examples of commit messages:**
+```bash
+git commit -m "Add new feature for user authentication"
+git commit -m "Fix bug in calculation function"
+git commit -m "Update README with new instructions"
+git commit -m "Remove unused console.log statements"
+git commit -m "Add error handling to API calls"
+git commit -m "Update CSS styles for better responsiveness"
+```
+
+**Tip:** Write clear, descriptive commit messages for each commit so you can track your changes over time.
+
 #### Step 4: Push to GitHub
 ```bash
+git push origin main
+```
+or simply:
+```bash
+git push
+```
+
+**When to use which:**
+- `git push origin main` - Always works, explicitly specifies where to push
+- `git push` - Only works if you used `-u` flag the first time (which sets up tracking)
+
+**If you used `-u` the first time:**
+```bash
+# After first push with -u, you can just use:
+git push              # Git remembers origin/main automatically
+```
+
+**If you didn't use `-u` the first time:**
+```bash
+# You need to specify each time:
 git push origin main
 ```
 
