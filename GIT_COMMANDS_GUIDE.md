@@ -20,13 +20,27 @@ git init
 ```
 
 #### Step 2: Add files to staging area
+
+**Add all files and folders:**
 ```bash
 git add .
 ```
-or add specific files:
+
+**Add specific files (any file type):**
 ```bash
 git add filename1.js filename2.html
+git add README.md LICENSE
+git add script.js styles.css index.html
 ```
+
+**Add entire folders:**
+```bash
+git add src/
+git add images/
+git add .github/
+```
+
+**Note:** You can add any file type (JavaScript, HTML, CSS, images, documents, etc.) and any folder structure!
 
 #### Step 3: Create initial commit
 ```bash
@@ -60,13 +74,90 @@ git status
 ```
 
 #### Step 2: Add changes to staging area
+
+**Add all changes (files and folders):**
 ```bash
 git add .
 ```
-or add specific files:
+
+**Add specific files (any file type):**
 ```bash
 git add filename.js
+git add filename.html
+git add filename.css
+git add filename.md
+git add filename.json
+git add README.md
 ```
+
+**Add entire folders/directories:**
+```bash
+git add folder-name/
+git add src/
+git add images/
+git add .github/
+```
+
+**Add multiple files at once:**
+```bash
+git add file1.js file2.html file3.css
+```
+
+**Add files by pattern/extension:**
+```bash
+git add *.js          # All JavaScript files
+git add *.html        # All HTML files
+git add *.md          # All Markdown files
+git add src/**/*.js   # All JS files in src folder and subfolders
+```
+
+**Add files by type:**
+```bash
+git add "*.js"        # JavaScript files
+git add "*.html"      # HTML files
+git add "*.css"       # CSS files
+git add "*.md"        # Markdown files
+git add "*.json"      # JSON files
+git add "*.png"       # PNG images
+git add "*.jpg"       # JPEG images
+git add "*.svg"       # SVG images
+```
+
+**Examples for different file types:**
+```bash
+# JavaScript files
+git add script.js
+git add app.js
+git add övning-fil.js
+
+# HTML files
+git add index.html
+git add script-prompt.html
+
+# CSS files
+git add styles.css
+git add main.css
+
+# Markdown files
+git add README.md
+git add GIT_COMMANDS_GUIDE.md
+
+# JSON files
+git add package.json
+git add config.json
+
+# Image files
+git add logo.png
+git add image.jpg
+
+# Folders with files
+git add .github/          # GitHub Actions folder
+git add src/              # Source code folder
+git add docs/             # Documentation folder
+git add images/           # Images folder
+```
+
+**Important:** Git tracks ANY file type you add - text files, images, videos, documents, etc. You can create folders, subfolders, and any file structure you need!
 
 #### Step 3: Commit changes
 ```bash
