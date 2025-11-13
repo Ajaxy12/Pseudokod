@@ -27,7 +27,63 @@ This guide covers three main scenarios for working with Git repositories.
 ```bash
 gh --version
 ```
-If not installed, download from: https://cli.github.com/
+
+**If not installed, install GitHub CLI:**
+
+**Windows (using winget):**
+```bash
+winget install GitHub.cli
+```
+
+**Windows (using Chocolatey):**
+```bash
+choco install gh
+```
+
+**Windows (using Scoop):**
+```bash
+scoop install gh
+```
+
+**Windows (Manual download):**
+- Download installer from: https://cli.github.com/
+- Or visit: https://github.com/cli/cli/releases/latest
+
+**macOS (using Homebrew):**
+```bash
+brew install gh
+```
+
+**macOS (using MacPorts):**
+```bash
+sudo port install gh
+```
+
+**Linux (Ubuntu/Debian):**
+```bash
+curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+sudo apt update
+sudo apt install gh
+```
+
+**Linux (Fedora/RHEL):**
+```bash
+sudo dnf install 'dnf-command(config-manager)'
+sudo dnf config-manager --add-repo https://cli.github.com/packages/rpm/gh-cli.repo
+sudo dnf install gh
+```
+
+**Linux (Arch/Manjaro):**
+```bash
+sudo pacman -S github-cli
+```
+
+**After installation, verify:**
+```bash
+gh --version
+```
 
 **Step 0a.2: Check authentication status**
 ```bash
@@ -944,12 +1000,62 @@ GitHub CLI (`gh`) is a command-line tool that lets you work with GitHub directly
 gh --version
 ```
 
-**If not installed:**
-- Download from: https://cli.github.com/
-- Or use package manager:
-  - Windows: `winget install GitHub.cli`
-  - macOS: `brew install gh`
-  - Linux: See https://cli.github.com/manual/installation
+**If not installed, install GitHub CLI:**
+
+**Windows (using winget):**
+```bash
+winget install GitHub.cli
+```
+
+**Windows (using Chocolatey):**
+```bash
+choco install gh
+```
+
+**Windows (using Scoop):**
+```bash
+scoop install gh
+```
+
+**Windows (Manual download):**
+- Download installer from: https://cli.github.com/
+- Or visit: https://github.com/cli/cli/releases/latest
+
+**macOS (using Homebrew):**
+```bash
+brew install gh
+```
+
+**macOS (using MacPorts):**
+```bash
+sudo port install gh
+```
+
+**Linux (Ubuntu/Debian):**
+```bash
+curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+sudo apt update
+sudo apt install gh
+```
+
+**Linux (Fedora/RHEL):**
+```bash
+sudo dnf install 'dnf-command(config-manager)'
+sudo dnf config-manager --add-repo https://cli.github.com/packages/rpm/gh-cli.repo
+sudo dnf install gh
+```
+
+**Linux (Arch/Manjaro):**
+```bash
+sudo pacman -S github-cli
+```
+
+**After installation, verify:**
+```bash
+gh --version
+```
 
 ### Authentication Commands
 
