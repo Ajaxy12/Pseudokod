@@ -234,7 +234,7 @@ Tack till alla som har bidragit till detta projekt:
 
 ## 📜 Licens
 
-Copyright (c) 2025 Pseudokod Study Guide - All Rights Reserved
+Copyright (c) 2026 Pseudokod Study Guide - All Rights Reserved
 
 **Viktigt:** Denna kod är proprietär och konfidentiell. Återanvändning, kopiering, modifiering eller distribution är STRENGT FÖRBJUDEN.
 
